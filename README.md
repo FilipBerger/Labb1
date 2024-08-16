@@ -1,4 +1,5 @@
 Installera SQL-baserad databas och kör labb1schema.sql
+
 Steg 1: Installera en SQL-baserad databas
 
 För att komma igång behöver du installera en SQL-baserad databas. Följ stegen nedan för att installera en databas som passar dina behov:
