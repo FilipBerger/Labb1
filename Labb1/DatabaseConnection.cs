@@ -17,19 +17,27 @@ namespace Labb1
             connection = new MySqlConnection(connectionString);
         }
 
-        public void SaveEncryptedString(string encryptedString)
+        public void SaveEncryptedString(string encryptedString, byte[] salt)
         {
             try
             {
                 connection.Open();
+                int saltid = 0;
                 MySqlCommand mySqlCommand = connection.CreateCommand();
-
-                MessageBox.Show("Successful database connection!");
+                mySqlCommand.CommandText = "SELECT MAX(saltid) AS MaxID FROM salts";
+                object result = mySqlCommand.ExecuteScalar();
+                int maxId = result == DBNull.Value ? -1 : Convert.ToInt32(result);
+                mySqlCommand.CommandText = $"INSERT INTO salts(salt) VALUE(@salt)";
+                mySqlCommand.Parameters.AddWithValue("@salt", salt);
+                mySqlCommand.ExecuteNonQuery();
+                mySqlCommand.CommandText = $"INSERT INTO encrypted_strings(encrypted_string, saltid) VALUES('{encryptedString}', {maxId + 1})";
+                mySqlCommand.ExecuteNonQuery();
+                MessageBox.Show("Successfully saved to database!");
                 connection.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Unable to connect to database!");
+                MessageBox.Show(ex.Message);
             }
         }
     }

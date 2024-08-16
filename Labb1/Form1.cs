@@ -6,7 +6,8 @@ namespace Labb1
 {
     public partial class Form1 : Form
     {
-        //private byte[] salt = new byte[16];
+        // Safe?
+        private byte[] salt = new byte[16];
         DatabaseConnection databaseConnection = new DatabaseConnection();
 
         public Form1()
@@ -31,7 +32,7 @@ namespace Labb1
             string plaintext = txtInput.Text;
             string encrypted = EncryptString(plaintext, password);
             txtOutput.Text = encrypted;
-            SaveEncryptedString(encrypted);
+            databaseConnection.SaveEncryptedString(encrypted, salt);
             ClearInputs();
         }
 
