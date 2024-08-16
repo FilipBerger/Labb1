@@ -1,4 +1,4 @@
-#Installera SQL-baserad databas och kör labb1schema.sql
+# Installera SQL-baserad databas och kör labb1schema.sql
 
 Steg 1: Installera en SQL-baserad databas
 
