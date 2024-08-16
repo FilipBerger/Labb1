@@ -13,7 +13,7 @@ namespace Labb1
 
         public DatabaseConnection() 
         {
-            string connectionString = "server=localhost;database=labb1;uid=root;pwd=test;";
+            string connectionString = "server=localhost;database=labb1;uid=root;pwd=;"; // Adjust the connection string to match your database
             connection = new MySqlConnection(connectionString);
         }
 
@@ -22,16 +22,15 @@ namespace Labb1
             try
             {
                 connection.Open();
-                int saltid = 0;
                 MySqlCommand mySqlCommand = connection.CreateCommand();
-                mySqlCommand.CommandText = "SELECT MAX(saltid) AS MaxID FROM salts";
+                mySqlCommand.CommandText = "SELECT MAX(saltid) AS MaxID FROM salts"; // Get the highest saltid
                 object result = mySqlCommand.ExecuteScalar();
-                int maxId = result == DBNull.Value ? 0 : Convert.ToInt32(result);
+                int maxId = result == DBNull.Value ? 0 : Convert.ToInt32(result); // If the table is empty, reset to start value
 
-                mySqlCommand.CommandText = $"INSERT INTO salts(salt) VALUE(@salt)";
-                mySqlCommand.Parameters.AddWithValue("@salt", salt);
+                mySqlCommand.CommandText = $"INSERT INTO salts(salt) VALUE(@salt)"; 
+                mySqlCommand.Parameters.AddWithValue("@salt", salt); // Add the salt as a parameter, injection protected
                 mySqlCommand.ExecuteNonQuery();
-                mySqlCommand.CommandText = $"INSERT INTO encrypted_strings(encrypted_string, saltid) VALUES('{encryptedString}', {maxId + 1})";
+                mySqlCommand.CommandText = $"INSERT INTO encrypted_strings(encrypted_string, saltid) VALUES('{encryptedString}', {maxId + 1})"; // Add incrementing saltid to match the salt
                 mySqlCommand.ExecuteNonQuery();
 
                 MessageBox.Show("Successfully saved to database!");
@@ -51,8 +50,8 @@ namespace Labb1
                 connection.Open();
                 MySqlCommand mySqlCommand = connection.CreateCommand();
 
-                mySqlCommand.CommandText = $"SELECT salt FROM salts WHERE saltid = (SELECT saltid FROM encrypted_strings WHERE encrypted_string = '{encryptedString}')";
-                
+                mySqlCommand.CommandText = $"SELECT salt FROM salts WHERE saltid = (SELECT saltid FROM encrypted_strings WHERE encrypted_string = '{encryptedString}')"; // Get the salt from the saltid of the encrypted string
+
                 MySqlDataReader reader = mySqlCommand.ExecuteReader();
                 reader.Read();
 

@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Labb1
 {
     public partial class Form1 : Form
-    {
+    {    
         DatabaseConnection databaseConnection = new DatabaseConnection();
         CryptoManager cryptoManager = new CryptoManager();
 
@@ -16,15 +16,12 @@ namespace Labb1
 
         private void btnEncrypt_Click(object sender, EventArgs e)
         {
-            string password = txtPassword.Text;
-            string plaintext = txtInput.Text;
-            string encrypted = cryptoManager.EncryptString(plaintext, password);
+            // Encrypt the input string and save it to the database
+            string encrypted = cryptoManager.EncryptString(txtInput.Text, txtPassword.Text);
             txtOutput.Text = encrypted;
             databaseConnection.SaveEncryptedString(encrypted, cryptoManager.GetSalt());
             ClearInputs();
         }
-
-
 
         private void ClearInputs()
         {
@@ -34,13 +31,12 @@ namespace Labb1
 
         private void btnDecrypt_Click(object sender, EventArgs e)
         {
-            string password = txtPassword.Text;
-            string ciphertext = txtInput.Text;
+            // Decrypt the input string and display it in the output textbox
             txtOutput.Text = "";
 
             try
             {
-                string decrypted = cryptoManager.DecryptString(ciphertext, password, databaseConnection);
+                string decrypted = cryptoManager.DecryptString(txtInput.Text, txtPassword.Text, databaseConnection);
                 txtOutput.Text = decrypted;
             }
             catch (CryptographicException)
@@ -50,56 +46,5 @@ namespace Labb1
 
             ClearInputs();
         }
-
-        //string EncryptString(string plaintext, string password)
-        //{
-        //    // Convert the plaintext string to a byte array
-        //    byte[] plaintextBytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
-
-        //    // Generate a random salt
-        //    using (var rng = new RNGCryptoServiceProvider())
-        //    {
-        //        rng.GetBytes(salt);
-        //    }
-
-        //    // Derive a new password using the PBKDF2 algorithm and a random salt
-        //    Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, salt, 1, HashAlgorithmName.SHA256);
-
-        //    // Use the password to encrypt the plaintext
-        //    Aes encryptor = Aes.Create();
-        //    encryptor.Key = passwordBytes.GetBytes(32);
-        //    encryptor.IV = passwordBytes.GetBytes(16);
-        //    using (MemoryStream ms = new MemoryStream())
-        //    {
-
-        //        using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
-        //        {
-        //            cs.Write(plaintextBytes, 0, plaintextBytes.Length);
-        //        }
-        //        return Convert.ToBase64String(ms.ToArray());
-        //    }
-        //}
-
-        //string DecryptString(string encrypted, string password)
-        //{
-        //    // Convert the encrypted string to a byte array
-        //    byte[] encryptedBytes = Convert.FromBase64String(encrypted);
-
-        //    // Derive the password using the PBKDF2 algorithm
-        //    Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, databaseConnection.GetSalt(encrypted), 1, HashAlgorithmName.SHA256);
-
-        //    // Use the password to decrypt the encrypted string
-        //    Aes encryptor = Aes.Create();
-        //    encryptor.Key = passwordBytes.GetBytes(32);
-        //    encryptor.IV = passwordBytes.GetBytes(16);
-        //    using (MemoryStream ms = new MemoryStream())
-        //    {
-        //        using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
-        //        {
-        //            cs.Write(encryptedBytes, 0, encryptedBytes.Length);
-        //        }
-        //        return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-        //    }
-        //}
     }
 }
