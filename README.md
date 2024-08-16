@@ -6,10 +6,7 @@ För att komma igång behöver du installera en SQL-baserad databas. Följ stege
 
     Välj en databas: Exempel på populära SQL-baserade databaser är MySQL, PostgreSQL, eller SQLite.
 
-    Installera databasen: Följ installationsinstruktionerna för den valda databasen på dess officiella webbplats. Här är några länkar för de vanligaste databaserna:
-        MySQL
-        PostgreSQL
-        SQLite
+    Installera databasen: Följ installationsinstruktionerna för den valda databasen på dess officiella webbplats.
 
     Konfigurera databasen: Efter installationen, konfigurera databasen enligt instruktionerna. Se till att du har skapat en användare och en databas där du kan köra dina SQL-skript.
 
