@@ -13,7 +13,7 @@ namespace Labb1
 
         public DatabaseConnection() 
         {
-            string connectionString = "server=localhost;database=labb1;uid=root;pwd=;";
+            string connectionString = "server=localhost;database=labb1;uid=root;pwd=test;";
             connection = new MySqlConnection(connectionString);
         }
 
@@ -27,11 +27,13 @@ namespace Labb1
                 mySqlCommand.CommandText = "SELECT MAX(saltid) AS MaxID FROM salts";
                 object result = mySqlCommand.ExecuteScalar();
                 int maxId = result == DBNull.Value ? 0 : Convert.ToInt32(result);
+
                 mySqlCommand.CommandText = $"INSERT INTO salts(salt) VALUE(@salt)";
                 mySqlCommand.Parameters.AddWithValue("@salt", salt);
                 mySqlCommand.ExecuteNonQuery();
                 mySqlCommand.CommandText = $"INSERT INTO encrypted_strings(encrypted_string, saltid) VALUES('{encryptedString}', {maxId + 1})";
                 mySqlCommand.ExecuteNonQuery();
+
                 MessageBox.Show("Successfully saved to database!");
                 connection.Close();
             }
@@ -42,15 +44,18 @@ namespace Labb1
             }
         }
 
-        public byte[] GetSalt(string encryptedString)
+        public byte[] FetchSalt(string encryptedString)
         {
             try
             {
                 connection.Open();
                 MySqlCommand mySqlCommand = connection.CreateCommand();
+
                 mySqlCommand.CommandText = $"SELECT salt FROM salts WHERE saltid = (SELECT saltid FROM encrypted_strings WHERE encrypted_string = '{encryptedString}')";
+                
                 MySqlDataReader reader = mySqlCommand.ExecuteReader();
                 reader.Read();
+
                 byte[] salt = (byte[])reader["salt"];
                 connection.Close();
                 return salt;
