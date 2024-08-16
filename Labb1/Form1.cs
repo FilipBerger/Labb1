@@ -98,7 +98,7 @@ namespace Labb1
             byte[] encryptedBytes = Convert.FromBase64String(encrypted);
 
             // Derive the password using the PBKDF2 algorithm
-            Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, salt, 1, HashAlgorithmName.SHA256);
+            Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, databaseConnection.GetSalt(encrypted), 1, HashAlgorithmName.SHA256);
 
             // Use the password to decrypt the encrypted string
             Aes encryptor = Aes.Create();
